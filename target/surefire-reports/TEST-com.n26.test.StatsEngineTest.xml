@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.n26.test.StatsEngineTest" time="91.006" tests="2" errors="0" skipped="0" failures="0">
+<testsuite name="com.n26.test.StatsEngineTest" time="91.005" tests="2" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_102\jre\bin"/>
@@ -63,5 +63,5 @@
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
   <testcase name="addSimpleTransaction" classname="com.n26.test.StatsEngineTest" time="0.001"/>
-  <testcase name="add10Transactions" classname="com.n26.test.StatsEngineTest" time="91.005"/>
+  <testcase name="add10Transactions" classname="com.n26.test.StatsEngineTest" time="91.004"/>
 </testsuite>

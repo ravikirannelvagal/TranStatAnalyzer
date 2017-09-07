@@ -3,7 +3,6 @@ package com.n26.test;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
-import java.sql.Timestamp;
 import java.util.Random;
 
 import com.n26.engine.StatsEngineManager;

@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class OldTransactionException extends RuntimeException{
 
 	public OldTransactionException(){
-		System.out.println("creating exception obj");
+		
 	}
 }

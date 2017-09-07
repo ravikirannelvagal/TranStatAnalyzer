@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.n26.exception.FutureTransactionException;
 import com.n26.exception.OldTransactionException;
 import com.n26.model.Stat;
 import com.n26.model.Transaction;
@@ -44,6 +45,9 @@ public class StatsEngineNavigator {
 		if(currTime > tran.getTimestamp() && (currTime-tran.getTimestamp() >TRANSACTION_WINDOW)){
 			
 			throw new OldTransactionException();
+		}
+		if(currTime < tran.getTimestamp() && (tran.getTimestamp()-currTime)> TRANSACTION_WINDOW){
+			throw new FutureTransactionException();
 		}
 		sem.addTransaction(tran);
     }

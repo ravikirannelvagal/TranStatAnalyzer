@@ -2,6 +2,7 @@ com\n26\engine\StatsEngineManager.class
 com\n26\model\Stat.class
 com\n26\engine\StatsEngineStarter.class
 com\n26\engine\StatsEngineTimer.class
+com\n26\exception\FutureTransactionException.class
 com\n26\model\Transaction.class
 com\n26\exception\OldTransactionException.class
 com\n26\engine\StatsEngineNavigator.class

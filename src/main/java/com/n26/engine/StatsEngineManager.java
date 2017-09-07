@@ -1,8 +1,7 @@
 package com.n26.engine;
 
-import java.util.Queue;
 import java.util.Timer;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.springframework.stereotype.Service;
 
@@ -18,6 +17,7 @@ import com.n26.model.Transaction;
  * 				keeps calculating the latest statistics 
  * 				based on the transactions that exists in
  * 				its queue which are not more than 60 seconds old.
+ * 
  * Logic:		Keep pushing all transactions that are added
  * 				to a ConcurrentLinedQueue. Start a timer that runs
  * 				the StatsEngineTimer every 1 second. This timer task
@@ -27,12 +27,13 @@ import com.n26.model.Transaction;
  * 				is received to read the stats, it happens in O(1) time.
  * 				Similarly, when a transaction is removed from the queue,
  * 				the statistics is recalculated automatically.
- * Choices:		ConcurrentLinkedQueue - This is a Queue which is thread
- * 				safe. This ensures even multiple calls to add transactions
+ * 
+ * Choices:		ConcurrentSkipListSet - This is a Set which is thread
+ * 				safe and sorted. This ensures even multiple calls to add transactions
  * 				are handled graciously and none of the transactions are
- * 				missed out. Queue itself suggests FIFO, so that as and when
- * 				transactions are timed out, they will be phased out of
- * 				the queue.
+ * 				missed out. The elements added to the set are Comparable
+ * 				and will be automatically sorted based on their timestamp
+ * 				
  * 				lockForModification - This is an object passed around 
  * 				which holds the lock to modifying the Stats object.
  * 				Only one block of code which hold this lock has the access
@@ -43,8 +44,8 @@ import com.n26.model.Transaction;
 @Service
 public class StatsEngineManager {
 
-	/* queue to hold the transactions that are added */
-	private final Queue<Transaction> transQ = new ConcurrentLinkedQueue<>();
+	/* collection to hold the transactions that are added */
+	private final ConcurrentSkipListSet<Transaction> transQ = new ConcurrentSkipListSet<>();
 	/* the timestamp of the first transaction 
 	 * indicates when the 60 second period begins */
 	private long qStartAt=0L;
@@ -81,7 +82,7 @@ public class StatsEngineManager {
 		this.opStat = opStat;
 	}
 
-	public Queue<Transaction> getTransQ(){
+	public ConcurrentSkipListSet<Transaction> getTransQ(){
 		return transQ;
 	}
 	
@@ -111,6 +112,7 @@ public class StatsEngineManager {
 			addToQueue(tran);
 		}
 		transQ.add(tran);
+		//tcs.add(tran);
 	}
 	
 	/*
@@ -151,11 +153,12 @@ public class StatsEngineManager {
 		}
 		//if there are more transactions in the queue, get the next start timestamp
 		if(transQ.size()>0)
-			qStartAt=transQ.peek().getTimestamp();
+			qStartAt=transQ.first().getTimestamp();
 	}
 	
 	private void removeTFromQueue(Transaction t){
 		//trying to remove tran
+		//System.out.println("removing "+t.getAmount()+" at: "+new Timestamp(t.getTimestamp()));
 		transQ.remove(t);
 		//transaction removed
 		//get lock to set the stat
